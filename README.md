@@ -1,6 +1,6 @@
-# Demo Langdock a2a Agent
+# Demo Langdock A2A Agent
 
-This repo is a sample of a simple implementation of an a2a agent compatible with Langdock's implementation of the A2A protocol.
+This repo is a sample of a simple implementation of an A2A agent compatible with Langdock's implementation of the A2A protocol.
 
 ## Requirements
 
@@ -49,6 +49,10 @@ AGENT_URL=https://<your-ngrok-url>.ngrok-free.app pnpm d
 ```bash
 pnpm langdock
 ```
+
+5. Create a Connection to the Agent
+
+Just use an langdock api-key with the `Agent API` Scope, it will be forwarded to the A2A
 
 (Optionally) Open the A2A Inspector to test your agent:
 
