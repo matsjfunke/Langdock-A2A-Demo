@@ -40,7 +40,11 @@ ngrok http 3333
 AGENT_URL=https://<your-ngrok-url>.ngrok-free.app pnpm d
 ```
 
-3. Open Langdock and "add integration" -> "start from scratch" -> "Connect Remote Agent (A2A)":
+3. Copy the Url from the Terminal output
+
+4. Open Langdock and "add integration" -> "start from scratch" -> "Connect Remote Agent (A2A)" -> paste the copied url into the input field:
+
+- Run this command (in a different terminal) to open the langdock integrations page:
 
 ```bash
 pnpm langdock

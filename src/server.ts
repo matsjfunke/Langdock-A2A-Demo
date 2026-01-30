@@ -163,4 +163,7 @@ const expressApp = appBuilder.setupRoutes(express(), "/", [requestMiddleware]);
 
 expressApp.listen(3333, () => {
   console.log(`🚀 Server started on http://localhost:3333`);
+  console.log(
+    `Enter the following URL in Langdock: \n\n${AGENT_URL}/.well-known/agent-card.json\n\n`
+  );
 });
