@@ -62,43 +62,7 @@ pnpm inspector
 
 ## OAuth Test Agent
 
-`src/oauth-server.ts` is a second, separate A2A agent protected by OAuth 2.0. Use it to test OAuth support in A2A clients such as Langdock. It has its own built-in OAuth server, so you don't need Auth0 or another identity provider, and it doesn't call the Langdock API.
-
-It's an echo agent: each reply repeats your message and shows the user, client, grant and scopes from the access token.
-
-```bash
-ngrok http 3334
-OAUTH_AGENT_URL=https://<your-ngrok-url>.ngrok-free.app pnpm dev:oauth
-```
-
-Then add `https://<your-ngrok-url>.ngrok-free.app/.well-known/agent-card.json` as a remote agent.
-
-| Endpoint | URL |
-| --- | --- |
-| Agent card (public) | `/.well-known/agent-card.json` |
-| Authorization server metadata (RFC 8414) | `/.well-known/oauth-authorization-server` |
-| Protected resource metadata (RFC 9728) | `/.well-known/oauth-protected-resource` |
-| Authorize (consent page) | `/oauth/authorize` |
-| Token | `/oauth/token` |
-| Dynamic client registration (RFC 7591) | `/oauth/register` |
-| Revocation (RFC 7009) | `/oauth/revoke` |
-
-- **Grants**: authorization code with PKCE (S256 or plain), refresh token (rotated on use), client credentials
-- **Scope**: `a2a:invoke` is required; `offline_access` is optional
-- **Pre-registered client**: ID `langdock-test-client`, secret `langdock-test-secret`. Both are dummy test values; you can override them.
-- **Consent page**: enter any username, no password. It becomes the token's user.
-- A2A requests without a valid token get `401` with a `WWW-Authenticate: Bearer resource_metadata="..."` challenge. A token without the required scope gets `403 insufficient_scope`.
-
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `OAUTH_AGENT_URL` | `http://localhost:3334` | Public origin used in the agent card and metadata |
-| `OAUTH_AGENT_PORT` | `3334` | Listen port |
-| `OAUTH_CLIENT_ID` / `OAUTH_CLIENT_SECRET` | `langdock-test-client` / `langdock-test-secret` | Pre-registered confidential client |
-| `OAUTH_REDIRECT_URIS` | empty (any URL) | Comma-separated redirect URI allow-list for the pre-registered client |
-| `OAUTH_ACCESS_TOKEN_TTL` | `3600` | Access token lifetime in seconds; set it low (e.g. `60`) to test refresh |
-| `OAUTH_REFRESH_TOKEN_TTL` | `2592000` | Refresh token lifetime in seconds |
-
-> Test only: clients, codes and tokens live in memory and are lost on restart, including restarts by `tsx watch` after file edits.
+The [`oauth-agent/`](oauth-agent/) folder contains a separate, self-contained A2A echo agent protected by OAuth 2.0, with a built-in OAuth server. Use it to test OAuth support in A2A clients. See its [README](oauth-agent/README.md) for setup.
 
 ## Agent Details
 

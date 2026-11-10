@@ -7,8 +7,7 @@
     "d": "pnpm i && pnpm dev",
     "dev": "tsx watch src/server.ts",
     "inspector": "open https://a2a-inspector-908687846511.us-central1.run.app/",
-    "langdock": "open https://app.langdock.com/integrations/",
-    "dev:oauth": "tsx watch src/oauth-server.ts"
+    "langdock": "open https://app.langdock.com/integrations/"
   },
   "keywords": [],
   "author": "",
