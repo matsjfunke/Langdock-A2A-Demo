@@ -40,7 +40,7 @@ import { A2AExpressApp } from "@a2a-js/sdk/server/express";
 // Configuration
 // ---------------------------------------------------------------------------
 
-const PORT = Number(process.env.OAUTH_AGENT_PORT ?? 3334);
+const PORT = Number(process.env.OAUTH_AGENT_PORT ?? 3333);
 // Public origin of this server, e.g. https://my-tunnel.example.com
 const BASE_URL = (
   process.env.OAUTH_AGENT_URL ?? `http://localhost:${PORT}`

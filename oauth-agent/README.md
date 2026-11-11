@@ -4,14 +4,14 @@ An A2A agent (protocol v0.3.0) protected by OAuth 2.0. Use it to test OAuth supp
 
 It has its own built-in OAuth server, so you don't need Auth0 or another identity provider, and it doesn't call the Langdock API. It's an echo agent: each reply repeats your message and shows the user, client, grant and scopes from the access token, so you can see exactly what your client sent.
 
-This folder is self-contained, with its own `package.json` and lockfile, and is independent of the API-key agent in the repository root.
+This folder is self-contained, with its own `package.json` and lockfile, and is independent of the API-key agent in the repository root. Both agents use port 3333 by default, so run one at a time, or set `OAUTH_AGENT_PORT` to run them side by side.
 
 ## Getting Started
 
 1. Tunnel the port. Langdock blocks private and internal addresses, so it needs a public HTTPS URL:
 
 ```bash
-ngrok http 3334
+ngrok http 3333
 ```
 
 2. Install dependencies and start the agent with your public URL:
@@ -50,8 +50,8 @@ If your client can't register itself dynamically, use the pre-registered client:
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `OAUTH_AGENT_URL` | `http://localhost:3334` | Public origin used in the agent card and metadata |
-| `OAUTH_AGENT_PORT` | `3334` | Listen port |
+| `OAUTH_AGENT_URL` | `http://localhost:3333` | Public origin used in the agent card and metadata |
+| `OAUTH_AGENT_PORT` | `3333` | Listen port |
 | `OAUTH_CLIENT_ID` / `OAUTH_CLIENT_SECRET` | `langdock-test-client` / `langdock-test-secret` | Pre-registered confidential client |
 | `OAUTH_REDIRECT_URIS` | empty (any URL) | Comma-separated redirect URI allow-list for the pre-registered client |
 | `OAUTH_ACCESS_TOKEN_TTL` | `3600` | Access token lifetime in seconds; set it low (e.g. `60`) to test refresh |
