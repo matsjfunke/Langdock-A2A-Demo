@@ -22,7 +22,14 @@ pnpm install
 OAUTH_AGENT_URL=https://<your-ngrok-url>.ngrok-free.app pnpm dev
 ```
 
-3. In Langdock, add a remote agent (A2A) with `https://<your-ngrok-url>.ngrok-free.app/.well-known/agent-card.json`.
+3. In Langdock, add a remote agent (A2A) with `https://<your-ngrok-url>.ngrok-free.app/.well-known/agent-card.json`. The card requires a bearer token, like the Phenom and BASF agents, so Langdock can't read it until a user has connected. Enter the OAuth settings by hand:
+
+   | Field | Value |
+   | --- | --- |
+   | Authorization URL | `https://<your-ngrok-url>.ngrok-free.app/oauth/authorize` |
+   | Token URL | `https://<your-ngrok-url>.ngrok-free.app/oauth/token` |
+   | Client ID / secret | `langdock-test-client` / `langdock-test-secret` |
+   | Scopes | `a2a:invoke offline_access` |
 
 4. When the consent page opens, enter any username (there's no password) and click **Approve**. That username becomes the token's user.
 
@@ -32,7 +39,7 @@ If your client can't register itself dynamically, use the pre-registered client:
 
 | Endpoint | Path |
 | --- | --- |
-| Agent card (public) | `/.well-known/agent-card.json` |
+| Agent card (bearer token required unless `OAUTH_PUBLIC_CARD=true`) | `/.well-known/agent-card.json`, or `OAUTH_CARD_PATH` |
 | Authorization server metadata (RFC 8414) | `/.well-known/oauth-authorization-server` |
 | Protected resource metadata (RFC 9728) | `/.well-known/oauth-protected-resource` |
 | Authorize (consent page) | `/oauth/authorize` |
@@ -44,7 +51,7 @@ If your client can't register itself dynamically, use the pre-registered client:
 - **Grants**: authorization code with PKCE (S256 or plain), refresh token (rotated on use), client credentials
 - **Scope**: `a2a:invoke` is required; `offline_access` is optional
 - **Client authentication**: `client_secret_basic`, `client_secret_post`, or `none` for public clients, which must use PKCE
-- A2A requests without a valid token get `401` with a `WWW-Authenticate: Bearer resource_metadata="..."` challenge. A token without the required scope gets `403 insufficient_scope`.
+- The card and A2A requests without a valid token get `401` with a `WWW-Authenticate: Bearer resource_metadata="..."` challenge. A token without the required scope gets `403 insufficient_scope`.
 
 ## Configuration
 
@@ -56,6 +63,8 @@ If your client can't register itself dynamically, use the pre-registered client:
 | `OAUTH_REDIRECT_URIS` | empty (any URL) | Comma-separated redirect URI allow-list for the pre-registered client |
 | `OAUTH_ACCESS_TOKEN_TTL` | `3600` | Access token lifetime in seconds; set it low (e.g. `60`) to test refresh |
 | `OAUTH_REFRESH_TOKEN_TTL` | `2592000` | Refresh token lifetime in seconds |
+| `OAUTH_PUBLIC_CARD` | `false` | Set to `true` to serve the agent card without a token (the A2A default) |
+| `OAUTH_CARD_PATH` | `.well-known/agent-card.json` | Custom card path, e.g. `a2a/career-coach-agent` to mimic Phenom |
 
 ## Scripts
 

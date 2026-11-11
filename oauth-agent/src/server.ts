@@ -63,6 +63,14 @@ const REFRESH_TOKEN_TTL = Number(
 );
 const AUTH_CODE_TTL = 300;
 
+// The agent card requires a bearer token unless OAUTH_PUBLIC_CARD=true.
+const PUBLIC_CARD = process.env.OAUTH_PUBLIC_CARD === "true";
+// Path of the agent card, e.g. "a2a/my-agent". Defaults to the A2A well-known path.
+const CARD_PATH = (
+  process.env.OAUTH_CARD_PATH ?? ".well-known/agent-card.json"
+).replace(/^\/+|\/+$/g, "");
+const CARD_URL = `${BASE_URL}/${CARD_PATH}`;
+
 const REQUIRED_SCOPE = "a2a:invoke";
 const SUPPORTED_SCOPES: Record<string, string> = {
   [REQUIRED_SCOPE]: "Send messages to the agent",
@@ -294,7 +302,7 @@ app.set("trust proxy", true);
 // Logs method, path and status only. Never logs tokens or bodies.
 app.use((req, res, next) => {
   res.on("finish", () =>
-    console.log(`${req.method} ${req.path} → ${res.statusCode}`)
+    console.log(`${req.method} ${req.originalUrl.split("?")[0]} → ${res.statusCode}`)
   );
   next();
 });
@@ -710,10 +718,11 @@ app.post(
   }
 );
 
-// --- A2A routes (bearer token required, except the agent card) ---------------
+// --- A2A routes (bearer token required; the card too unless OAUTH_PUBLIC_CARD) --
 
 const requireBearerToken: express.RequestHandler = (req, res, next) => {
-  if (req.method === "GET" && req.path.startsWith("/.well-known/")) {
+  const path = req.originalUrl.split("?")[0].replace(/\/+$/, "");
+  if (PUBLIC_CARD && req.method === "GET" && path === `/${CARD_PATH}`) {
     next();
     return;
   }
@@ -749,11 +758,18 @@ const requestHandler = new DefaultRequestHandler(
   new InMemoryTaskStore(),
   new EchoAgentExecutor()
 );
-new A2AExpressApp(requestHandler).setupRoutes(app, "", [requireBearerToken]);
+new A2AExpressApp(requestHandler).setupRoutes(
+  app,
+  "",
+  [requireBearerToken],
+  CARD_PATH
+);
 
 app.listen(PORT, () => {
   console.log(`OAuth test A2A agent listening on http://localhost:${PORT}`);
   console.log(`Public URL: ${BASE_URL}`);
-  console.log(`Agent card: ${BASE_URL}/.well-known/agent-card.json`);
+  console.log(
+    `Agent card: ${CARD_URL} (${PUBLIC_CARD ? "public" : "requires a bearer token"})`
+  );
   console.log(`Pre-registered client ID: ${STATIC_CLIENT_ID}`);
 });
