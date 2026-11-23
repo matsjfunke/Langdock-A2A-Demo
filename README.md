@@ -60,6 +60,10 @@ Just use an langdock api-key with the `Agent API` Scope, it will be forwarded to
 pnpm inspector
 ```
 
+## OAuth Test Agent
+
+The [`oauth-agent/`](oauth-agent/) folder contains a separate, self-contained A2A echo agent protected by OAuth 2.0, with a built-in OAuth server. Use it to test OAuth support in A2A clients. See its [README](oauth-agent/README.md) for setup.
+
 ## Agent Details
 
 - **Protocol Version**: 0.3.0
